@@ -32,8 +32,8 @@ Before working on QuickThought, make sure you have installed:
 git clone https://github.com/dheeraz101/Thoughts-Windows.git
 cd Thoughts-Windows
 
-# 2. Install all dependencies
-npm install
+# 2. Run automated developer environment setup script
+npm run setup
 ```
 
 ---
@@ -54,6 +54,7 @@ QuickThought uses a decoupled architecture allowing the exact same React compone
 ├── electron/
 │   └── main.js                # Native Electron main window & title bar overlay
 ├── scripts/
+│   ├── setup-dev.js           # Automated developer setup & file audit script
 │   └── bump-version.js        # Automated version synchronization script
 ├── src/
 │   ├── components/            # UI components (Editor, Settings, TitleBar, NotesDrawer)
