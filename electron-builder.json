@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "com.quickthought.app",
   "productName": "QuickThought",
-  "copyright": "Copyright © 2026",
+  "copyright": "Copyright © 2026 QuickThought Contributors",
   "directories": {
     "output": "dist-electron",
     "buildResources": "assets"
@@ -21,7 +21,11 @@
         "target": "portable",
         "arch": ["x64"]
       }
-    ]
+    ],
+    "artifactName": "${productName}-Setup-${version}-${arch}.${ext}"
+  },
+  "portable": {
+    "artifactName": "${productName}-Portable-${version}-${arch}.${ext}"
   },
   "nsis": {
     "oneClick": false,

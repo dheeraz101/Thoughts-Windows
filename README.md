@@ -1,85 +1,139 @@
 # QuickThought ⚡
 
-> **Open. Type. Close.** The ultra-fast, distraction-free thought capture app designed for Windows & desktop. Native speed, 100% offline, local-first SQLite WAL persistence, and customizable global hotkeys.
+> **Open. Type. Close.** The ultra-fast, distraction-free desktop thought capture app & scratchpad for Windows & Web. Native speed, 100% offline, local-first storage, version snapshots, and customizable global hotkeys.
 
-![QuickThought Banner](https://img.shields.io/badge/Tauri-v2.0-blue?style=for-the-badge&logo=tauri)
-![Windows 11](https://img.shields.io/badge/Windows-11%20Mica%20%26%20Fluent-0078D4?style=for-the-badge&logo=windows)
-![SQLite WAL](https://img.shields.io/badge/Database-SQLite%203.45-003B57?style=for-the-badge&logo=sqlite)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-
----
-
-## 🌟 Vision & Design Pillars
-
-QuickThought is built for writers, developers, and thinkers who need to capture ideas the millisecond they strike, without waiting for heavy electron apps or slow cloud syncs.
-
-- **⚡ Sub-15ms Pre-Warmed Summon**: Instant global hotkey overlay (`Alt+Space`, `Ctrl+Shift+T`, or custom hotkey).
-- **🧘 Clean Minimalism**: Pure focus on writing. Toolbars and formatting options stay collapsed until needed.
-- **🔒 100% Offline & Local-First**: Zero telemetry, zero external network dependency. Stored in high-performance local SQLite database with WAL (Write-Ahead Logging).
-- **⌨️ Keyboard-Driven Command Palette**: Access everything with `Ctrl+K` or `Ctrl+Shift+P`.
-- **🔄 Conflict-Free Keybinding**: Record and re-map any global shortcut if occupied by Raycast, PowerToys, or Alfred.
+[![CI & Windows Release Workflow](https://github.com/dheeraz101/Thoughts-Windows/actions/workflows/release.yml/badge.svg)](https://github.com/dheeraz101/Thoughts-Windows/actions/workflows/release.yml)
+![Platform](https://img.shields.io/badge/Platform-Windows%20x64%20%7C%20Web-0078D4?style=flat&logo=windows)
+![Node.js](https://img.shields.io/badge/Node.js-v22.x-339933?style=flat&logo=nodedotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-v5.8-3178C6?style=flat&logo=typescript)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat)
 
 ---
 
-## 💻 Tech Architecture
+## 🌟 Key Features
 
-QuickThought utilizes a high-performance **Tauri v2 + React 18 + TypeScript** stack:
+QuickThought is designed for writers, developers, and thinkers who need to capture thoughts instantaneously without getting derailed by heavy note applications or slow cloud syncs.
+
+- **⚡ Instant Scratchpad**: Lightweight floating window surface with auto-focus and instant note access.
+- **🧘 Zen Mode & Minimal View**: Toggle distraction-free writing modes with full-width typing or custom margins.
+- **🕒 Version Snapshots & History**: Create named version snapshots and easily revert to previous edits at any time.
+- ** Markdown & Raw Text Formatting**: Full Markdown support with live side-by-side or toggleable rendered preview.
+- **🎨 Themes & Customization**: Supports Dark Glass, High Contrast Dark, Light Theme, custom typography, font sizing, and line widths.
+- **🔒 100% Offline & Local-First**: Zero telemetry, zero external network requests. All notes stay strictly on your local machine.
+- **⌨️ Keyboard Shortcuts**: Full command palette (`Ctrl+K`), quick new note (`Ctrl+N`), snapshot viewer (`Ctrl+H`), and toggle preview (`Ctrl+Shift+P`).
+
+---
+
+## 🚀 GitHub Branching & CI/CD Release Pipeline
+
+This repository features an automated **GitHub Actions CI/CD pipeline** designed for seamless development and release management:
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│              QuickThought Architecture                  │
-├──────────────────────────┬──────────────────────────────┤
-│ Frontend Surface         │ React 18 + Vite + Tailwind   │
-│ OS Native Windowing      │ Tauri v2 + Windows DWM       │
-│ Database Engine          │ Local SQLite 3.45 (WAL Mode) │
-│ Inter-Process Comms      │ Rust Zero-Copy Memory IPC    │
-└──────────────────────────┴──────────────────────────────┘
+                      ┌──────────────────────────────────────┐
+                      │          Developer Push              │
+                      └──────────────────┬───────────────────┘
+                                         │
+                 ┌───────────────────────┴───────────────────────┐
+                 │                                               │
+    git push origin main                       git push origin main:release
+                 │                                               │
+                 ▼                                               ▼
+  ┌─────────────────────────────┐                 ┌─────────────────────────────┐
+  │  Job 1: CI Quality Check    │                 │ Job 2: Windows Release Build│
+  ├─────────────────────────────┤                 ├─────────────────────────────┤
+  │ - Node.js 22 Environment    │                 │ - Windows Server Runner     │
+  │ - TypeScript Type Check     │                 │ - Generate Commit Delta Log │
+  │ - Web Application Build     │                 │ - Package Windows .exe      │
+  │ - Dist Artifact Validation  │                 │ - Publish GitHub Release    │
+  └─────────────────────────────┘                 └─────────────────────────────┘
 ```
 
+### 🌿 How to Push Code & Trigger Releases
+
+1. **Development & Bug Checks (`main` branch)**:
+   ```bash
+   git push origin main
+   ```
+   *Runs Job 1*: Verifies TypeScript types, linter, and web production build.
+
+2. **Publishing a Windows Release (`release` branch)**:
+   ```bash
+   git push origin main:release
+   ```
+   *Runs Job 2*: Builds the native Windows `.exe` installer (NSIS) and portable standalone executable, extracts recent git commit logs since the last release, and publishes an official GitHub Release package automatically.
+
 ---
 
-## ⌨️ Global Shortcuts & Keybindings
-
-| Action | Default Hotkey | Configurable? |
-| :--- | :--- | :--- |
-| **Summon / Hide Window** | `Alt+Space` | ✅ Yes |
-| **Command Palette** | `Ctrl+K` | ✅ Yes |
-| **New Thought** | `Ctrl+N` | ✅ Yes |
-| **Search Notes Drawer** | `Ctrl+F` | ✅ Yes |
-| **Toggle Markdown Preview**| `Ctrl+D` | ✅ Yes |
-| **Close Window** | `Escape` | ✅ Yes |
-
----
-
-## 🛠️ Building & Running Locally
+## 🛠️ Local Development & Building
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) v18+ & `npm`
-- [Rust](https://www.rust-lang.org/) (for Tauri v2 desktop builds)
+- **Node.js**: v20 or v22 LTS
+- **npm**: v10+
 
-### Development
-```bash
-# Clone repository
-git clone https://github.com/your-username/quickthought.prewarm.git
-cd quickthought.prewarm
+### Step-by-Step Setup
 
-# Install dependencies
-npm install
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/dheeraz101/Thoughts-Windows.git
+   cd Thoughts-Windows
+   ```
 
-# Run Vite web development server
-npm run dev
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Start Local Development Server**:
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:3000` in your browser.
+
+4. **Run Code Quality Check**:
+   ```bash
+   npm run lint
+   ```
+
+5. **Package Native Windows Executables (.exe) Locally**:
+   ```bash
+   npm run electron:build
+   ```
+   The compiled `.exe` installers will be saved in the `dist-electron/` folder.
+
+---
+
+## 📁 Repository Structure
+
 ```
-
-### Tauri Native Desktop Build
-```bash
-# Build native Windows executable
-npm run build
-cargo tauri build
+.
+├── .github/
+│   ├── ISSUE_TEMPLATE/       # Bug report & feature request templates
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── workflows/
+│       └── release.yml        # CI quality check & Windows .exe release pipeline
+├── electron/
+│   └── main.js               # Electron main window container configuration
+├── src/
+│   ├── components/           # UI components (Editor, Drawer, TitleBar, Settings)
+│   ├── App.tsx               # Main QuickThought application layout
+│   └── main.tsx              # React entry point
+├── electron-builder.json     # Windows NSIS & Portable .exe packaging config
+├── package.json              # App manifest and scripts
+├── LICENSE                   # MIT License
+└── README.md
 ```
 
 ---
 
-## 📄 License & Privacy
+## 📄 Community & Governance
 
-QuickThought is open-source under the **[MIT License](LICENSE)**.
-Read our [Privacy Policy](PRIVACY.md) — 100% local, zero tracking, zero cloud dependencies.
+- **[Contributing Guidelines](CONTRIBUTING.md)**: Guidelines for opening issues and submitting PRs.
+- **[Code of Conduct](CODE_OF_CONDUCT.md)**: Community rules and standards.
+- **[Security Policy](SECURITY.md)**: Vulnerability disclosure procedure.
+- **[Privacy Policy](PRIVACY.md)**: 100% local privacy guarantee.
+
+---
+
+## 📜 License
+
+QuickThought is open-source software licensed under the **[MIT License](LICENSE)**.

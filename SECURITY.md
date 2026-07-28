@@ -4,22 +4,30 @@
 
 | Version | Supported |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
+| 1.x     | :white_check_mark: |
 | < 1.0   | :x:                |
 
-## Reporting a Vulnerability
+---
 
-QuickThought is a **100% offline, local-first application**. It does not transmit data over the network or connect to third-party tracking servers.
+## 🔒 Security & Privacy Commitments
 
-If you discover a security issue regarding local data storage, IPC message handling, or hotkey interception:
+QuickThought is engineered as a **100% local-first, offline-first application**:
 
-1. **Do NOT open a public issue.**
-2. Email the maintainer directly at `security@quickthought.local` or contact the maintainer directly.
-3. Include details about the vulnerability, steps to reproduce, and potential impact.
+1. **No Cloud Sync or Remote Telemetry**: Notes, snapshots, and application settings are stored locally on your device in browser/Electron storage.
+2. **No Data Tracking**: No user activity analytics or data tracking scripts exist in the codebase.
+3. **No External Network Requests**: The core editing experience operates fully offline without requiring an internet connection.
 
-We will acknowledge receipt within 48 hours and work on a security fix promptly.
+---
 
-## Local Data Security
-- All user notes are stored locally in IndexedDB / SQLite database files.
-- Notes are never uploaded to any remote server.
-- Optional encryption at rest can be configured via local vault settings.
+## 📩 Reporting a Vulnerability
+
+If you discover a security vulnerability (such as electron IPC exploitation, local file access leaks, or unsafe HTML parsing in Markdown preview):
+
+1. **Do NOT open a public GitHub issue.**
+2. Please report the issue privately by emailing the maintainers or submitting a private security advisory through GitHub.
+3. Include:
+   - Description of the vulnerability
+   - Proof of concept / steps to reproduce
+   - Potential impact on local note data or system permissions
+
+We aim to acknowledge receipt of vulnerability reports within 48 hours and release fixes in the subsequent release build.

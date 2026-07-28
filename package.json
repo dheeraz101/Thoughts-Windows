@@ -1,9 +1,17 @@
 {
-  "name": "react-example",
+  "name": "quickthought",
+  "productName": "QuickThought",
+  "version": "1.0.0",
+  "description": "Ultra-fast, distraction-free desktop thought capture & scratchpad app for Windows and Web",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
   "main": "electron/main.js",
+  "author": "QuickThought Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dheeraz101/Thoughts-Windows.git"
+  },
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
