@@ -8,6 +8,9 @@
 ![Privacy](https://img.shields.io/badge/Privacy-100%25%20Offline%20%26%20Secure-success?style=flat)
 ![Open Source](https://img.shields.io/badge/Open%20Source-MIT%20License-blue?style=flat)
 ![Version](https://img.shields.io/badge/Version-v1.0.0-blue?style=flat)
+![Status](https://img.shields.io/badge/Status-Active%20Development-orange?style=for-the-badge)
+![Stability](https://img.shields.io/badge/Stability-Unstable-red?style=for-the-badge)
+![Do Not Build](https://img.shields.io/badge/Build-Do%20Not%20Use-critical?style=for-the-badge)
 
 ---
 
@@ -20,6 +23,16 @@ QuickThought is designed with an absolute local-first architecture:
 ![Node.js](https://img.shields.io/badge/Node.js-v22.x-339933?style=flat&logo=nodedotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-v5.8-3178C6?style=flat&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)
+
+> [!CAUTION]
+> ## 🚧 Under Active Development
+>
+> This repository is **currently unstable** and **not intended for public use**.
+>
+> - APIs and project structure may change at any time.
+> - Features are incomplete.
+> - Breaking changes are expected.
+> - **Please do not build or use this project until the first stable release.**
 
 ---
 

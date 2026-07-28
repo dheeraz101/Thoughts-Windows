@@ -62,4 +62,5 @@ slnx.sqlite
 VSWorkspaceState.json
 .wsuo
 DocumentLayout.json
+DocumentLayout.backup.json
 *.vsidx
