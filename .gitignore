@@ -57,3 +57,9 @@ desktop.ini
 *.njsproj
 *.sln
 *.sw?
+slnx.sqlite
+ProjectSettings.json
+VSWorkspaceState.json
+.wsuo
+DocumentLayout.json
+*.vsidx
