@@ -1,0 +1,6 @@
+{
+  "name": "QuickThought",
+  "description": "Ultra-fast distraction-free thought capture application with instant local autosave, markdown, customizable themes, settings, and command palette.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
