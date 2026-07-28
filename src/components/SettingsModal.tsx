@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppSettings, ThemePreset } from '../types';
-import { Sliders, Monitor, Type, Shield, Database, X, Check, Cpu, Layers, Keyboard, RotateCcw } from 'lucide-react';
+import { Sliders, Monitor, Type, Shield, Database, X, Check, Cpu, Layers, Keyboard, RefreshCw, DownloadCloud, CheckCircle2, PauseCircle, AlertCircle, RotateCcw } from 'lucide-react';
+import { APP_VERSION } from '../version';
+import { updateService, UpdateInfo } from '../services/updateService';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -19,10 +21,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onOpenArchDoc,
   onExportAll,
 }) => {
-  const [activeTab, setActiveTab] = useState<'appearance' | 'editor' | 'behavior' | 'hotkeys' | 'storage' | 'system'>('appearance');
+  const [activeTab, setActiveTab] = useState<'appearance' | 'editor' | 'behavior' | 'hotkeys' | 'storage' | 'updates' | 'system'>('appearance');
   const [localSettings, setLocalSettings] = useState<AppSettings>(settings);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [recordingKey, setRecordingKey] = useState<keyof AppSettings | null>(null);
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo>(updateService.getStatus());
+
+  useEffect(() => {
+    return updateService.subscribe((info) => setUpdateInfo(info));
+  }, []);
 
   if (!isOpen) return null;
 
@@ -100,6 +107,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               { id: 'hotkeys', label: 'Shortcuts & Conflicts', icon: Keyboard },
               { id: 'behavior', label: 'Window Behavior', icon: Shield },
               { id: 'storage', label: 'Storage & Vault', icon: Database },
+              { id: 'updates', label: 'Updates & Release', icon: RefreshCw },
               { id: 'system', label: 'System Diagnostics', icon: Cpu },
             ].map((tab) => {
               const Icon = tab.icon;
@@ -510,6 +518,123 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   >
                     Export Backup
                   </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'updates' && (
+              <div className="space-y-4">
+                {/* App Version Card */}
+                <div className="p-4 bg-slate-950/80 border border-white/[0.06] rounded-xl space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-mono text-blue-400 font-bold uppercase tracking-wider">QuickThought Desktop</div>
+                      <div className="text-base font-bold text-white mt-0.5 flex items-center gap-2">
+                        v{APP_VERSION}
+                        <span className="text-[10px] px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-mono font-normal">
+                          Official Release
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => updateService.checkForUpdates(localSettings, true)}
+                      disabled={updateInfo.status === 'checking' || updateInfo.status === 'downloading'}
+                      className="px-3 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-semibold rounded-xl text-xs flex items-center gap-2 transition shadow-md"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${updateInfo.status === 'checking' ? 'animate-spin' : ''}`} />
+                      <span>{updateInfo.status === 'checking' ? 'Checking...' : 'Check for Updates'}</span>
+                    </button>
+                  </div>
+
+                  {/* Update Status Banner */}
+                  <div className="p-3 bg-slate-900/90 border border-white/[0.08] rounded-lg text-xs space-y-1 font-mono">
+                    <div className="flex items-center gap-2">
+                      {updateInfo.status === 'checking' && <RefreshCw className="w-4 h-4 text-blue-400 animate-spin" />}
+                      {updateInfo.status === 'up-to-date' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                      {updateInfo.status === 'available' && <DownloadCloud className="w-4 h-4 text-amber-400 animate-bounce" />}
+                      {updateInfo.status === 'downloading' && <DownloadCloud className="w-4 h-4 text-blue-400 animate-pulse" />}
+                      {updateInfo.status === 'ready' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                      {updateInfo.status === 'paused' && <PauseCircle className="w-4 h-4 text-slate-400" />}
+
+                      <span className="font-semibold text-slate-200">
+                        {updateInfo.status === 'checking' && 'Querying GitHub Releases API...'}
+                        {updateInfo.status === 'up-to-date' && 'You are running the latest version of QuickThought!'}
+                        {updateInfo.status === 'available' && `New Release Available: v${updateInfo.latestVersion}`}
+                        {updateInfo.status === 'downloading' && `Downloading Silent Background Update (${updateInfo.downloadProgress}%)...`}
+                        {updateInfo.status === 'ready' && 'Update downloaded silently! Will apply on next restart.'}
+                        {updateInfo.status === 'paused' && 'Automatic update checks are paused.'}
+                        {updateInfo.status === 'idle' && 'No pending update checks.'}
+                      </span>
+                    </div>
+
+                    {updateInfo.releaseNotes && (
+                      <div className="text-[11px] text-slate-400 pt-1 border-t border-white/[0.06] mt-1 font-sans">
+                        {updateInfo.releaseNotes}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Update Controls & Toggles */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3.5 bg-slate-950/60 border border-white/[0.06] rounded-xl">
+                    <div>
+                      <div className="font-semibold text-slate-100">Automatic Update Checking</div>
+                      <div className="text-[11px] text-slate-400">Automatically check for new releases when QuickThought starts</div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={localSettings.enableAutoUpdates}
+                      onChange={(e) => handleChange('enableAutoUpdates', e.target.checked)}
+                      className="w-4 h-4 accent-blue-500 rounded"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3.5 bg-slate-950/60 border border-white/[0.06] rounded-xl">
+                    <div>
+                      <div className="font-semibold text-slate-100">Silent Background Updates</div>
+                      <div className="text-[11px] text-slate-400">Download and apply updates silently in the background without interrupting your typing</div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={localSettings.enableSilentUpdates}
+                      onChange={(e) => handleChange('enableSilentUpdates', e.target.checked)}
+                      className="w-4 h-4 accent-blue-500 rounded"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between p-3.5 bg-slate-950/60 border border-white/[0.06] rounded-xl">
+                    <div>
+                      <div className="font-semibold text-slate-100">Pause All Updates</div>
+                      <div className="text-[11px] text-slate-400">Temporarily suspend automatic background update checks and notifications</div>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={localSettings.pauseUpdates}
+                      onChange={(e) => {
+                        handleChange('pauseUpdates', e.target.checked);
+                        if (e.target.checked) {
+                          updateService.checkForUpdates({ ...localSettings, pauseUpdates: true }, false);
+                        }
+                      }}
+                      className="w-4 h-4 accent-blue-500 rounded"
+                    />
+                  </div>
+
+                  <div className="p-3.5 bg-slate-950/60 border border-white/[0.06] rounded-xl flex items-center justify-between">
+                    <div>
+                      <div className="font-semibold text-slate-100">Release Channel</div>
+                      <div className="text-[11px] text-slate-400">Select update channel preference</div>
+                    </div>
+                    <select
+                      value={localSettings.updateChannel}
+                      onChange={(e) => handleChange('updateChannel', e.target.value as 'stable' | 'beta')}
+                      className="bg-slate-900 border border-white/[0.1] rounded-lg px-3 py-1.5 text-xs font-mono text-slate-200 outline-none"
+                    >
+                      <option value="stable">Stable Releases (Recommended)</option>
+                      <option value="beta">Beta Pre-releases</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             )}

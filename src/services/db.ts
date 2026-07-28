@@ -37,6 +37,12 @@ export const DEFAULT_SETTINGS: AppSettings = {
 
   customStorageFolder: 'C:\\Users\\User\\Documents\\QuickThought',
   enableAutoBackup: true,
+
+  enableAutoUpdates: true,
+  enableSilentUpdates: true,
+  pauseUpdates: false,
+  updateChannel: 'stable',
+  lastUpdateCheck: Date.now(),
 };
 
 class LocalDatabase {

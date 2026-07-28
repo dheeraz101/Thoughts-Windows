@@ -74,6 +74,13 @@ export interface AppSettings {
   // Storage
   customStorageFolder: string;
   enableAutoBackup: boolean;
+
+  // Updates & Silent Auto-Update
+  enableAutoUpdates: boolean;
+  enableSilentUpdates: boolean;
+  pauseUpdates: boolean;
+  updateChannel: 'stable' | 'beta';
+  lastUpdateCheck?: number;
 }
 
 export interface CommandItem {

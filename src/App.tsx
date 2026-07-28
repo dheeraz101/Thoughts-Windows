@@ -8,6 +8,7 @@ import { CommandPalette } from './components/CommandPalette';
 import { SettingsModal } from './components/SettingsModal';
 import { ArchDocView } from './components/ArchDocView';
 import { TraySimulator } from './components/TraySimulator';
+import { updateService } from './services/updateService';
 
 // Helper to check if a KeyboardEvent matches a shortcut string like "Alt+Space" or "Ctrl+K"
 function matchShortcut(e: KeyboardEvent, shortcutStr: string): boolean {
@@ -51,6 +52,10 @@ export default function App() {
   useEffect(() => {
     const loadedSettings = dbService.getSettings();
     setSettings(loadedSettings);
+
+    if (loadedSettings.enableAutoUpdates) {
+      updateService.checkForUpdates(loadedSettings, false);
+    }
 
     dbService.getAllNotes().then((loadedNotes) => {
       if (loadedNotes.length > 0) {

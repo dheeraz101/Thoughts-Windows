@@ -1,0 +1,52 @@
+name: CI Code Quality & Audit
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  code-quality:
+    name: Code Quality, Security Audit & Build Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache npm Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: TypeScript Type Check & Linting
+        run: npm run lint
+
+      - name: Security Vulnerability Audit
+        run: npm audit --audit-level=high || echo "⚠️ Security audit completed with warnings."
+
+      - name: Test Production Web Build
+        run: npm run build
+
+      - name: Verify Web Dist Artifacts
+        run: |
+          if [ -f "dist/index.html" ]; then
+            echo "✅ Production web build succeeded! dist/index.html verified."
+          else
+            echo "❌ Build error: dist/index.html is missing!"
+            exit 1
+          fi

@@ -1,61 +1,15 @@
-name: CI & Windows Release Workflow
+name: Windows Release Executable (.exe)
 
 on:
   push:
     branches:
-      - main
       - release
       - 'release/**'
-  pull_request:
-    branches:
-      - main
-      - release
 
 jobs:
-  # ------------------------------------------------------------------
-  # Job 1: CI Code Quality & Bug Check (Runs on 'main' and PRs)
-  # Triggered by: `git push origin main`
-  # ------------------------------------------------------------------
-  ci-quality-check:
-    name: Code Quality & Bug Check (Main Branch)
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Type Check & Linting
-        run: npm run lint
-
-      - name: Test Web Application Build
-        run: npm run build
-
-      - name: Verify Dist Build Artifacts
-        run: |
-          if [ -f "dist/index.html" ]; then
-            echo "✅ Web build succeeded! dist/index.html found."
-          else
-            echo "❌ Web build error: dist/index.html is missing!"
-            exit 1
-          fi
-
-  # ------------------------------------------------------------------
-  # Job 2: Package Windows Executable (.exe) & Publish Release
-  # Triggered by: `git push origin main:release` or push to `release` branch
-  # ------------------------------------------------------------------
   build-windows-release:
     name: Build & Package Windows Executable (.exe)
     runs-on: windows-latest
-    if: github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout Repository with Full History
@@ -63,47 +17,57 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate Commit Log & Release Notes
-        id: release_notes
-        shell: bash
-        run: |
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
-          if [ -n "$PREV_TAG" ]; then
-            echo "Generating commit log since previous release tag ($PREV_TAG)..."
-            COMMITS=$(git log $PREV_TAG..HEAD --pretty=format:"- %s (%h)")
-          else
-            echo "No previous tag found. Getting recent commits..."
-            COMMITS=$(git log -n 15 --pretty=format:"- %s (%h)")
-          fi
-          
-          if [ -z "$COMMITS" ]; then
-            COMMITS="- General updates and performance improvements."
-          fi
-
-          echo "RELEASE_COMMITS<<EOF" >> $GITHUB_ENV
-          echo "$COMMITS" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
+      - name: Cache npm Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\npm-cache
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install Dependencies
         run: npm install
 
-      - name: Run Type Check & Code Verification
+      - name: Code Quality Check
         run: npm run lint
 
-      - name: Build Web Production Bundle
+      - name: Generate Changelog from Recent Commits
+        id: changelog
+        shell: bash
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "Latest tag found: $LATEST_TAG"
+          
+          if [ -n "$LATEST_TAG" ]; then
+            echo "Extracting commit logs since tag $LATEST_TAG..."
+            CHANGELOG=$(git log "$LATEST_TAG"..HEAD --pretty=format:"- %s (%h - %an)")
+          else
+            echo "No previous git tag detected. Extracting last 20 commits..."
+            CHANGELOG=$(git log -n 20 --pretty=format:"- %s (%h - %an)")
+          fi
+
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="- Maintenance updates and general code refactoring."
+          fi
+
+          echo "CHANGELOG_BODY<<EOF" >> $GITHUB_ENV
+          echo "$CHANGELOG" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Build Web Production Assets
         run: npm run build
 
-      - name: Package Windows .exe Executable
+      - name: Package Windows Executable (.exe)
         run: npx electron-builder --win --x64 --config electron-builder.json
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Windows Executable Artifacts
+      - name: Upload Windows Executables Artifact
         uses: actions/upload-artifact@v4
         with:
           name: QuickThought-Windows-Exe
@@ -112,9 +76,9 @@ jobs:
             dist-electron/*.msi
             dist-electron/*.blockmap
 
-      - name: Publish GitHub Release with Executables & Dynamic Notes
+      - name: Publish GitHub Release with Executables & Auto Changelog
         uses: softprops/action-gh-release@v2
-        if: github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/tags/')
+        if: github.ref == 'refs/heads/release' || startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             dist-electron/*.exe
@@ -125,16 +89,17 @@ jobs:
           tag_name: release-v1.0.0-${{ github.run_number }}
           name: "QuickThought Release v1.0.0 (Build #${{ github.run_number }})"
           body: |
-            ## 🚀 QuickThought Windows Release (Build #${{ github.run_number }})
+            ## ⚡ QuickThought Windows Release (Build #${{ github.run_number }})
             
-            Automated Windows release compiled from the `release` branch.
+            This automated Windows release executable was generated from the `release` branch.
             
             ### 📦 Downloadable Executables
-            - **Setup Installer**: `QuickThought Setup 0.0.0.exe` (NSIS Installer)
-            - **Portable Binary**: `QuickThought 0.0.0.exe` (Standalone executable)
+            - **Installer**: `QuickThought-Setup-1.0.0-x64.exe` (NSIS Installer)
+            - **Portable**: `QuickThought-Portable-1.0.0-x64.exe` (Standalone portable executable)
             
-            ### 📝 Changes & Commits in this Release
-            ${{ env.RELEASE_COMMITS }}
+            ---
+            
+            ### 📝 Automated Changelog & Commits
+            ${{ env.CHANGELOG_BODY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

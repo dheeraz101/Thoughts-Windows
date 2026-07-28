@@ -1,6 +1,7 @@
 import React from 'react';
 import { X, Minus, Settings, Search, Terminal, Pin, Maximize2, LayoutGrid, Minimize2, PanelRight } from 'lucide-react';
 import { AppSettings, WindowPosition } from '../types';
+import { APP_VERSION } from '../version';
 
 interface TitleBarProps {
   settings: AppSettings;
@@ -64,6 +65,9 @@ export const TitleBar: React.FC<TitleBarProps> = ({
         <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
         <span className="font-semibold text-slate-300 truncate max-w-[110px] xs:max-w-[150px] sm:max-w-[240px]">
           {activeNoteTitle || 'QuickThought'}
+        </span>
+        <span className="text-[9px] px-1 py-0.2 rounded font-mono text-blue-400/80 bg-blue-500/10 border border-blue-500/20 shrink-0">
+          v{APP_VERSION}
         </span>
         <span
           className={`text-[9px] px-1 rounded font-mono shrink-0 ${
