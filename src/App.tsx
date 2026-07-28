@@ -105,8 +105,8 @@ export default function App() {
       setActiveNote(updatedNote);
 
       // Update in notes array
-      setNotes((prevNotes) =>
-        prevNotes.map((n) => (n.id === updatedNote.id ? updatedNote : n))
+      setNotes((prevNotes: Note[]) =>
+        prevNotes.map((n: Note) => (n.id === updatedNote.id ? updatedNote : n))
       );
 
       // Debounce disk/database flush
@@ -124,7 +124,7 @@ export default function App() {
   const handleNewNote = useCallback(() => {
     const freshNote = createNewNote('', 'Untitled Thought');
     dbService.saveNote(freshNote).then(() => {
-      setNotes((prev) => [freshNote, ...prev]);
+      setNotes((prev: Note[]) => [freshNote, ...prev]);
       setActiveNote(freshNote);
       setIsSaved(true);
     });
@@ -134,7 +134,7 @@ export default function App() {
   const handleDeleteNote = useCallback(
     (id: string) => {
       dbService.deleteNote(id).then(() => {
-        const remaining = notes.filter((n) => n.id !== id);
+        const remaining = notes.filter((n: Note) => n.id !== id);
         setNotes(remaining);
         if (activeNote?.id === id) {
           if (remaining.length > 0) {
@@ -152,10 +152,10 @@ export default function App() {
   const handleTogglePin = useCallback((noteToPin: Note) => {
     const updated = { ...noteToPin, isPinned: !noteToPin.isPinned };
     dbService.saveNote(updated).then(() => {
-      setNotes((prev) =>
+      setNotes((prev: Note[]) =>
         prev
-          .map((n) => (n.id === updated.id ? updated : n))
-          .sort((a, b) => {
+          .map((n: Note) => (n.id === updated.id ? updated : n))
+          .sort((a: Note, b: Note) => {
             if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1;
             return b.updatedAt - a.updatedAt;
           })
@@ -220,14 +220,14 @@ export default function App() {
       // Global Summon toggle check
       if (matchShortcut(e, settings.globalShortcut || 'Alt+Space')) {
         e.preventDefault();
-        setIsWindowVisible((prev) => !prev);
+        setIsWindowVisible((prev: boolean) => !prev);
         return;
       }
 
       // Command Palette
       if (matchShortcut(e, settings.commandPaletteShortcut || 'Ctrl+K') || (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'p')) {
         e.preventDefault();
-        setIsCommandPaletteOpen((prev) => !prev);
+        setIsCommandPaletteOpen((prev: boolean) => !prev);
         return;
       }
 
@@ -248,7 +248,7 @@ export default function App() {
       // Ctrl + , -> Settings
       if (e.ctrlKey && e.key === ',') {
         e.preventDefault();
-        setIsSettingsOpen((prev) => !prev);
+        setIsSettingsOpen((prev: boolean) => !prev);
         return;
       }
 
