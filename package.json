@@ -15,9 +15,13 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
+    "build:win": "vite build && electron-builder --win --x64 --config electron-builder.json",
+    "build:win:portable": "vite build && electron-builder --win portable --x64 --config electron-builder.json",
+    "build:win:dir": "vite build && electron-builder --win --dir --config electron-builder.json",
     "electron:build": "vite build && electron-builder --config electron-builder.json",
+    "bump-version": "node scripts/bump-version.js",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
+    "clean": "rm -rf dist dist-electron",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

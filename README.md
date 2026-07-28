@@ -85,11 +85,26 @@ QuickThought uses a decoupled hybrid architecture that powers both web deploymen
    npm run lint
    ```
 
-5. **Package Native Windows Executable (.exe) Locally**:
-   ```bash
-   npm run electron:build
-   ```
+5. **Package & Test Native Windows Executable (.exe) Locally**:
+   - **Full NSIS Installer + Portable**:
+     ```bash
+     npm run build:win
+     ```
+   - **Standalone Portable `.exe` Only**:
+     ```bash
+     npm run build:win:portable
+     ```
+   - **Unpacked Directory (Fast Test Run)**:
+     ```bash
+     npm run build:win:dir
+     ```
    Compiled `.exe` installer binaries will be placed in `dist-electron/`.
+
+6. **Bumping Project Version across all release files**:
+   ```bash
+   npm run bump-version 1.1.0
+   ```
+   *Automatically updates `package.json`, `src/version.ts`, and copyright dates.*
 
 ---
 
@@ -150,6 +165,7 @@ QuickThought uses a decoupled hybrid architecture that powers both web deploymen
 ├── package.json               # Application metadata and dependencies
 ├── SECURITY.md                # Security vulnerability reporting policy
 ├── CONTRIBUTING.md            # Git branching & contribution guidelines
+├── DEVELOPMENT_GUIDE.md       # Developer setup, build scripts & operations guide
 ├── CODE_OF_CONDUCT.md         # Community standards
 └── LICENSE                    # MIT License
 ```
