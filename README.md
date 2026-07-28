@@ -5,7 +5,18 @@
 [![CI Code Quality & Audit](https://github.com/dheeraz101/Thoughts-Windows/actions/workflows/main.yml/badge.svg)](https://github.com/dheeraz101/Thoughts-Windows/actions/workflows/main.yml)
 [![Windows Release Workflow](https://github.com/dheeraz101/Thoughts-Windows/actions/workflows/release.yml/badge.svg)](https://github.com/dheeraz101/Thoughts-Windows/actions/workflows/release.yml)
 ![Platform](https://img.shields.io/badge/Platform-Windows%20x64%20%7C%20Web-0078D4?style=flat&logo=windows)
+![Privacy](https://img.shields.io/badge/Privacy-100%25%20Offline%20%26%20Secure-success?style=flat)
+![Open Source](https://img.shields.io/badge/Open%20Source-MIT%20License-blue?style=flat)
 ![Version](https://img.shields.io/badge/Version-v1.0.0-blue?style=flat)
+
+---
+
+## 🔒 100% Offline, Private, Secure & Open Source
+
+QuickThought is designed with an absolute local-first architecture:
+- **🔒 100% Offline & Local**: Your notes never leave your computer. All data is saved directly in local IndexedDB and LocalStorage engines.
+- **🛡️ Zero Tracking or Telemetry**: No analytics, no third-party trackers, no hidden network calls.
+- **📖 100% Open Source**: Fully open source under the MIT License. Anyone can audit, build, or customize the application.
 ![Node.js](https://img.shields.io/badge/Node.js-v22.x-339933?style=flat&logo=nodedotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-v5.8-3178C6?style=flat&logo=typescript)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat)

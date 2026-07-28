@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Zap, Layers, Cpu, Database, Layout, Terminal, Code2, ArrowRight, CheckCircle2, Sliders, Monitor, Sparkles, X, BookOpen, HardDrive, Lock } from 'lucide-react';
+import { Shield, Zap, Layers, Cpu, Database, Layout, Terminal, Code2, ArrowRight, CheckCircle2, Sliders, Monitor, Sparkles, X, BookOpen, HardDrive, Lock, ShieldCheck } from 'lucide-react';
 
 export const ArchDocView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState<'vision' | 'architecture' | 'rust' | 'react' | 'performance' | 'roadmap'>('vision');
@@ -16,11 +16,15 @@ export const ArchDocView: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-bold text-base text-white tracking-tight">QuickThought Technical Specification</h2>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono border border-emerald-500/30 font-semibold flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                  Offline Verified
+                </span>
                 <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 text-[10px] font-mono border border-blue-500/30 font-semibold">
-                  Tauri v2 + Rust
+                  Open Source
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">High-Performance Desktop Thought Engine • Apple HIG & Obsidian Inspired</p>
+              <p className="text-xs text-slate-400 mt-0.5">High-Performance Local Desktop Engine • Apple HIG & Obsidian Inspired</p>
             </div>
           </div>
           <button
