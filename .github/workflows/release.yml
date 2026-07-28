@@ -39,24 +39,15 @@ jobs:
         id: changelog
         shell: bash
         run: |
+          echo "CHANGELOG_BODY<<EOF" >> "$GITHUB_ENV"
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-          echo "Latest tag found: $LATEST_TAG"
-          
           if [ -n "$LATEST_TAG" ]; then
-            echo "Extracting commit logs since tag $LATEST_TAG..."
-            CHANGELOG=$(git log "$LATEST_TAG"..HEAD --pretty=format:"- %s (%h - %an)")
+            git log "$LATEST_TAG"..HEAD --pretty=format:"- %s (%h - %an)" >> "$GITHUB_ENV" || echo "- Maintenance updates and refactoring." >> "$GITHUB_ENV"
           else
-            echo "No previous git tag detected. Extracting last 20 commits..."
-            CHANGELOG=$(git log -n 20 --pretty=format:"- %s (%h - %an)")
+            git log -n 20 --pretty=format:"- %s (%h - %an)" >> "$GITHUB_ENV" || echo "- Maintenance updates and refactoring." >> "$GITHUB_ENV"
           fi
-
-          if [ -z "$CHANGELOG" ]; then
-            CHANGELOG="- Maintenance updates and general code refactoring."
-          fi
-
-          echo "CHANGELOG_BODY<<EOF" >> $GITHUB_ENV
-          echo "$CHANGELOG" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          echo "" >> "$GITHUB_ENV"
+          echo "EOF" >> "$GITHUB_ENV"
 
       - name: Build Web Production Assets
         run: npm run build
@@ -72,7 +63,6 @@ jobs:
           name: QuickThought-Windows-Exe
           path: |
             dist-electron/*.exe
-            dist-electron/*.msi
             dist-electron/*.blockmap
 
       - name: Publish GitHub Release with Executables & Auto Changelog
@@ -81,7 +71,7 @@ jobs:
         with:
           files: |
             dist-electron/*.exe
-            dist-electron/*.msi
+          fail_on_unmatched_files: false
           draft: false
           prerelease: false
           generate_release_notes: true
